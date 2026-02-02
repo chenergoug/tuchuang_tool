@@ -1,4 +1,6 @@
 const db = require('../models')
+const callbackMsg = require('../config/callbackMsg')
+const { commonSuccess, commonFailure, commonError } = callbackMsg
 
 // 获取所有用户 (分页)
 exports.getUsers = async (req, res) => {
@@ -70,6 +72,30 @@ exports.deleteUser = async (req, res) => {
     // 级联删除：订单和余额也会被删除 (取决于外键设置)
     await user.destroy()
     res.json({ message: '用户删除成功' })
+  } catch (err) {
+    console.error(err.message)
+    res.status(500).send('服务器错误')
+  }
+}
+
+// 修改客户密码
+exports.updatePassword = async (req, res) => {
+  try {
+    const user = await db.User.findByPk(req.params.id)
+    if (!user) {
+      return res.status(404).json({ message: '用户不存在' })
+    }
+
+    // 验证旧密码
+    const isMatch = await user.comparePassword(req.body.oldPassword)
+    if (!isMatch) {
+      return res.status(400).json({ message: '旧密码错误' })
+    }
+
+    // 更新密码
+    user.password = req.body.newPassword
+    await user.save()
+    res.json({ message: '密码更新成功' })
   } catch (err) {
     console.error(err.message)
     res.status(500).send('服务器错误')

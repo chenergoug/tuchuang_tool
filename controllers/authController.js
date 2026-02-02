@@ -95,6 +95,5 @@ exports.login = async (req, res) => {
 
 // 退出登录 (前端通常只需删除本地 Token)
 exports.logout = (req, res) => {
-  // 如果使用黑名单 JWT，这里可以添加逻辑
   res.json(commonSuccess('退出成功'))
 }
