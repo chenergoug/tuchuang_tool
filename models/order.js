@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
       },
       order_number: {
         type: DataTypes.STRING(100),
-        unique: true,
         allowNull: false
       },
       amount: {
