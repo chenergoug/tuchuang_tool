@@ -4,7 +4,6 @@ const Sequelize = require('sequelize')
 const sequelize = require('../config/database')
 
 const db = {}
-
 // 读取模型文件
 fs.readdirSync(__dirname)
   .filter((file) => {
@@ -25,4 +24,5 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 
+// 导出数据库实例
 module.exports = db

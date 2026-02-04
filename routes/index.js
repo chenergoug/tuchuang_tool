@@ -2,14 +2,9 @@ const express = require('express')
 const router = express.Router()
 
 // 鉴权路由
-const authController = require('../controllers/authController')
-const UserRouter = require('./user')
+const AuthRouter = require('./auth')
 
-router.get('/captcha', authController.captcha)
-router.post('/register', authController.register)
-router.post('/login', authController.login)
-router.post('/logout', authController.logout)
-
-router.use('/users', UserRouter)
+// 认证路由
+router.use('/auth', AuthRouter)
 
 module.exports = router

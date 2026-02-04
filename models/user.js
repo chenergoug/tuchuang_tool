@@ -9,26 +9,47 @@ module.exports = (sequelize, DataTypes) => {
       },
       username: {
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: false,
+        comment: '用户名'
       },
       phone: {
         type: DataTypes.STRING(100),
         // unique: true,
-        allowNull: false
+        allowNull: false,
+        comment: '手机号'
       },
       password: {
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: false,
+        comment: '密码'
+      },
+      wechat: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        comment: '微信号'
+      },
+      openid: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        comment: 'openid'
+      },
+      status: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        comment: '状态 1:正常 2:停用'
       },
       role: {
-        type: DataTypes.ENUM('user', 'admin'),
-        defaultValue: 'user'
+        type: DataTypes.ENUM('admin', 'user'),
+        defaultValue: 'user',
+        comment: '角色'
       }
     },
     {
       tableName: 'users',
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
       hooks: {
-        // 在保存前自动加密密码
         beforeSave: async (user) => {
           if (user.changed('password')) {
             const bcrypt = require('bcryptjs')
@@ -38,12 +59,5 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   )
-
-  // 关联关系将在最后同步
-  User.associate = function (models) {
-    User.hasMany(models.Order, { foreignKey: 'user_id' })
-    User.hasOne(models.Balance, { foreignKey: 'user_id' })
-  }
-
   return User
 }
