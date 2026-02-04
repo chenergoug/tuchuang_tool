@@ -1,45 +1,8 @@
 const db = require('../models')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { v4: uuidv4 } = require('uuid')
-const svgCaptcha = require('svg-captcha')
-const redis = require('../utils/redis')
+
 const { commonSuccess, commonFailure, commonError, authSuccess, authFailure } = require('../config/callback')
-
-// 验证码
-exports.captcha = (req, res) => {
-  try {
-    // 唯一标识
-    const captchaId = uuidv4()
-    const captcha = svgCaptcha.create({
-      size: 4,
-      ignoreChars: '0o1i',
-      noise: 2,
-      color: true,
-      background: '#f0f0f0'
-    })
-    // Redis存储：key设计包含业务类型，方便管理和过期
-    const key = `captcha:${type}:${captchaId}`
-
-    // 存储答案，5分钟过期
-    redis.setex(key, 300, captcha.text.toLowerCase())
-
-    // 记录日志（可选）
-    console.log(`[Captcha] 生成: ${key} = ${captcha.text}`)
-    console.log('验证码:', captcha.text.toLowerCase())
-    req.session.captcha = captcha.text.toLowerCase()
-    res.type('svg')
-    res.status(200).send(
-      commonSuccess('验证码生成成功', {
-        captchaId,
-        captcha: captcha.data
-      })
-    )
-  } catch (err) {
-    console.error(err.message)
-    res.status(500).send(commonError(`验证码生成失败: ${err.message}`))
-  }
-}
 
 // 注册
 exports.register = async (req, res) => {
